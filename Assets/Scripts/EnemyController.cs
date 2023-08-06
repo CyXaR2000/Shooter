@@ -27,7 +27,7 @@ public class EnemyController : MonoBehaviour
     public void Init(Player player)
     {
         _player = player;
-        // _character.SetSpeed(player.speed);
+        _character.SetSpeed(player.speed);
         player.OnChange += OnChange;
     }
 
@@ -69,6 +69,12 @@ public class EnemyController : MonoBehaviour
                     break;
                 case "vZ":
                     velocity.z = (float)dataChange.Value;
+                    break;
+                case "rX":
+                    _character.SetRotateX((float)dataChange.Value);
+                    break;
+                case "xY":
+                    _character.SetRotateY((float)dataChange.Value);
                     break;
                 default:
                     Debug.LogWarning("Не обрабатывается " + dataChange.Field);

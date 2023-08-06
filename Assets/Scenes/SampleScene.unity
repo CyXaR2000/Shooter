@@ -454,12 +454,16 @@ PrefabInstance:
     m_TransformParent: {fileID: 0}
     m_Modifications:
     - target: {fileID: 4754524598496448150, guid: 32a3b151bd4b06145b7d31ce83aaea18, type: 3}
-      propertyPath: <_speed>k__BackingField
-      value: 4
+      propertyPath: <speed>k__BackingField
+      value: 6
       objectReference: {fileID: 0}
     - target: {fileID: 4754524598496448170, guid: 32a3b151bd4b06145b7d31ce83aaea18, type: 3}
       propertyPath: m_Name
-      value: Player_1
+      value: Player
+      objectReference: {fileID: 0}
+    - target: {fileID: 4754524598496448170, guid: 32a3b151bd4b06145b7d31ce83aaea18, type: 3}
+      propertyPath: m_IsActive
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 4754524598496448171, guid: 32a3b151bd4b06145b7d31ce83aaea18, type: 3}
       propertyPath: m_RootOrder
@@ -504,10 +508,6 @@ PrefabInstance:
     - target: {fileID: 4754524598496448171, guid: 32a3b151bd4b06145b7d31ce83aaea18, type: 3}
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 9199012430199112008, guid: 32a3b151bd4b06145b7d31ce83aaea18, type: 3}
-      propertyPath: _layerMask.m_Bits
-      value: 64
       objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 32a3b151bd4b06145b7d31ce83aaea18, type: 3}
