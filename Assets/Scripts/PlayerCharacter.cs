@@ -17,6 +17,7 @@ public class PlayerCharacter : Character
     private float _rotateY;
     private float _currentRotateX;
     private float _jumpTime;
+    private bool _isFly = true;
 
     private void Start()
     {
@@ -70,7 +71,6 @@ public class PlayerCharacter : Character
         rotateX = _head.localEulerAngles.x;
     }
 
-    private bool _isFly = true;
     private void OnCollisionStay(Collision other)
     {
         var contactPoint = other.contacts;
@@ -94,3 +94,4 @@ public class PlayerCharacter : Character
         _rigidbody.AddForce(0, _jumpForce, 0, ForceMode.VelocityChange);
     }
 }
+

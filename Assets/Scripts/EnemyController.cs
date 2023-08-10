@@ -6,16 +6,17 @@ using Colyseus.Schema;
 public class EnemyController : MonoBehaviour
 {
     [SerializeField] private EnemyCharacter _character;
-    private List<float> _receiveTimeinterval = new List<float> { 0, 0, 0, 0, 0 };
+    [SerializeField] private EnemyGun _gun;
+    private List<float> _receiveTimeInterval = new List<float> { 0, 0, 0, 0, 0 };
     private float AverageInterval
     {
         get
         {
-            int receiveTimeIntervalCount = _receiveTimeinterval.Count;
+            int receiveTimeIntervalCount = _receiveTimeInterval.Count;
             float summ = 0;
-            for (int i = 0; i < _receiveTimeinterval.Count; i++)
+            for (int i = 0; i < _receiveTimeInterval.Count; i++)
             {
-                summ += _receiveTimeinterval[i];
+                summ += _receiveTimeInterval[i];
             }
 
             return summ / receiveTimeIntervalCount;
@@ -31,6 +32,13 @@ public class EnemyController : MonoBehaviour
         player.OnChange += OnChange;
     }
 
+    public void Shoot(in ShootInfo info)
+    {
+        Vector3 position = new Vector3(info.pX, info.pY, info.pZ);
+        Vector3 velocity = new Vector3(info.dX, info.dY, info.dZ);
+        _gun.Shoot(position, velocity);
+    }
+
     public void Destroy()
     {
         _player.OnChange -= OnChange;
@@ -40,15 +48,20 @@ public class EnemyController : MonoBehaviour
     {
         float interval = Time.time - _lastReceiveTime;
         _lastReceiveTime = Time.time;
-        _receiveTimeinterval.Add(interval);
-        _receiveTimeinterval.Remove(0);
-    }
-    internal void OnChange(List<DataChange> chsnges)
-    {
-        Vector3 position = _character.transform.position;
-        Vector3 velocity = Vector3.zero;
 
-        foreach (var dataChange in chsnges)
+        _receiveTimeInterval.Add(interval);
+        _receiveTimeInterval.Remove(0);
+    }
+    internal void OnChange(List<DataChange> changes)
+    {
+
+        // SaveReceiveTime();
+
+        // Vector3 position = transform.position;
+        Vector3 position = _character._targetPosition;
+        Vector3 velocity = _character._velocity;
+
+        foreach (var dataChange in changes)
         {
             switch (dataChange.Field)
             {
@@ -73,7 +86,7 @@ public class EnemyController : MonoBehaviour
                 case "rX":
                     _character.SetRotateX((float)dataChange.Value);
                     break;
-                case "xY":
+                case "rY":
                     _character.SetRotateY((float)dataChange.Value);
                     break;
                 default:

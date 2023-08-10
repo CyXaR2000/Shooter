@@ -10,11 +10,12 @@ public class CharacterAnimation : MonoBehaviour
     [SerializeField] private Animator _animator;
     [SerializeField] private CheckFly _checkFly;
     [SerializeField] private Character _character;
+    [SerializeField] private float _maxSpeed = 6f;
 
     private void Update()
     {
         Vector3 localVelocity = _character.transform.InverseTransformVector(_character._velocity);
-        float speed = localVelocity.magnitude / _character.speed;
+        float speed = localVelocity.magnitude / _maxSpeed;
         float sign = Mathf.Sign(localVelocity.z);
 
         _animator.SetFloat(Speed, speed * sign);
