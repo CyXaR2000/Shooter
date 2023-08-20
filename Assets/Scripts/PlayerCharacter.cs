@@ -1,9 +1,11 @@
 using System.Collections;
 using System.Collections.Generic;
+using Colyseus.Schema;
 using UnityEngine;
 
 public class PlayerCharacter : Character
 {
+    [SerializeField] private Health _health;
     [SerializeField] private Rigidbody _rigidbody;
     [SerializeField] private Transform _head;
     [SerializeField] private Transform _cmeraPoint;
@@ -25,6 +27,9 @@ public class PlayerCharacter : Character
         camera.parent = _cmeraPoint;
         camera.localPosition = Vector3.zero;
         camera.localRotation = Quaternion.identity;
+
+        _health.SendMax(maxHealth);
+        _health.SetCurrent(maxHealth);
     }
 
     public void SetInput(float h, float v, float rotateY)
@@ -92,6 +97,27 @@ public class PlayerCharacter : Character
 
         _jumpTime = Time.time;
         _rigidbody.AddForce(0, _jumpForce, 0, ForceMode.VelocityChange);
+    }
+
+    internal void OnChange(List<DataChange> changes)
+    {
+        foreach (var dataChange in changes)
+        {
+            switch (dataChange.Field)
+            {
+                case "loss":
+                    MultiplayerManager.Instance._lossCounter.SetPlayerLoss((byte)dataChange.Value);
+                    break;
+                case "currentHP":
+                    _health.SetCurrent((sbyte)dataChange.Value);
+                    break;
+                default:
+                    Debug.LogWarning("Не обрабатывается " + dataChange.Field);
+                    break;
+            }
+
+        }
+
     }
 }
 

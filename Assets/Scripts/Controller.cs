@@ -1,19 +1,23 @@
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
 public class Controller : MonoBehaviour
 {
+    [SerializeField] private float _restartDelay = 3f;
     [SerializeField] private PlayerCharacter _player;
     [SerializeField] private float _mouseSensetivity = 2f;
     [SerializeField] private PlayerGun _gun;
     private MultiplayerManager _multiplayerManager;
+    private bool _hold = false;
     private void Start()
     {
         _multiplayerManager = MultiplayerManager.Instance;
     }
     private void Update()
     {
+        if (_hold) return;
         float h = Input.GetAxisRaw("Horizontal");
         float v = Input.GetAxisRaw("Vertical");
 
@@ -42,6 +46,36 @@ public class Controller : MonoBehaviour
         _multiplayerManager.SendMessage("shoot", json);
     }
 
+    public void Restart(string jsonRestartInfo)
+    {
+        RestartInfo info = JsonUtility.FromJson<RestartInfo>(jsonRestartInfo);
+        StartCoroutine(Hold());
+
+        _player.transform.position = new Vector3(info.x, 0, info.z);
+        _player.SetInput(0, 0, 0);
+
+        Dictionary<string, object> data = new Dictionary<string, object>()
+        {
+            {"pX", info.x},
+            {"pY", 0},
+            {"pZ", info.z},
+            {"vX", 0},
+            {"vY", 0},
+            {"vZ", 0},
+            {"rX", 0},
+            {"rY", 0}
+        };
+
+        _multiplayerManager.SendMessage("move", data);
+    }
+
+    private IEnumerator Hold()
+    {
+        _hold = true;
+        yield return new WaitForSecondsRealtime(_restartDelay);
+        _hold = false;
+    }
+
     private void SendMove()
     {
         _player.GetMoveInfo(out Vector3 position, out Vector3 velocity, out float rotateX, out float rotateY);
@@ -50,9 +84,9 @@ public class Controller : MonoBehaviour
             {"pX", position.x},
             {"pY", position.y},
             {"pZ", position.z},
-            {"vX", position.x},
-            {"vY", position.y},
-            {"vZ", position.z},
+            {"vX", velocity.x},
+            {"vY", velocity.y},
+            {"vZ", velocity.z},
             {"rX", rotateX},
             {"rY", rotateY}
         };
@@ -71,4 +105,12 @@ public struct ShootInfo
     public float dX;
     public float dY;
     public float dZ;
+}
+
+[Serializable]
+
+public struct RestartInfo
+{
+    public float x;
+    public float z;
 }
